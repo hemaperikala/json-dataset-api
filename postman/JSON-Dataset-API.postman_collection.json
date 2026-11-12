@@ -1,0 +1,124 @@
+{
+  "info": {
+    "name": "JSON Dataset API",
+    "description": "Insert JSON records into named datasets and query them with group-by and sort-by. Set the baseUrl variable (local or the deployed URL).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "dataset", "value": "employee_dataset" }
+  ],
+  "item": [
+    {
+      "name": "Insert record 1 (John Doe)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"id\": 1,\n  \"name\": \"John Doe\",\n  \"age\": 30,\n  \"department\": \"Engineering\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/dataset/{{dataset}}/record", "host": ["{{baseUrl}}"], "path": ["api", "dataset", "{{dataset}}", "record"] }
+      }
+    },
+    {
+      "name": "Insert record 2 (Jane Smith)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"id\": 2,\n  \"name\": \"Jane Smith\",\n  \"age\": 25,\n  \"department\": \"Engineering\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/dataset/{{dataset}}/record", "host": ["{{baseUrl}}"], "path": ["api", "dataset", "{{dataset}}", "record"] }
+      }
+    },
+    {
+      "name": "Insert record 3 (Alice Brown)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"id\": 3,\n  \"name\": \"Alice Brown\",\n  \"age\": 28,\n  \"department\": \"Marketing\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/dataset/{{dataset}}/record", "host": ["{{baseUrl}}"], "path": ["api", "dataset", "{{dataset}}", "record"] }
+      }
+    },
+    {
+      "name": "Query - group by department",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/dataset/{{dataset}}/query?groupBy=department",
+          "host": ["{{baseUrl}}"], "path": ["api", "dataset", "{{dataset}}", "query"],
+          "query": [{ "key": "groupBy", "value": "department" }]
+        }
+      }
+    },
+    {
+      "name": "Query - sort by age ascending",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/dataset/{{dataset}}/query?sortBy=age&order=asc",
+          "host": ["{{baseUrl}}"], "path": ["api", "dataset", "{{dataset}}", "query"],
+          "query": [{ "key": "sortBy", "value": "age" }, { "key": "order", "value": "asc" }]
+        }
+      }
+    },
+    {
+      "name": "Query - sort by age descending",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/dataset/{{dataset}}/query?sortBy=age&order=desc",
+          "host": ["{{baseUrl}}"], "path": ["api", "dataset", "{{dataset}}", "query"],
+          "query": [{ "key": "sortBy", "value": "age" }, { "key": "order", "value": "desc" }]
+        }
+      }
+    },
+    {
+      "name": "Query - group by department and sort by age",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/dataset/{{dataset}}/query?groupBy=department&sortBy=age&order=asc",
+          "host": ["{{baseUrl}}"], "path": ["api", "dataset", "{{dataset}}", "query"],
+          "query": [{ "key": "groupBy", "value": "department" }, { "key": "sortBy", "value": "age" }, { "key": "order", "value": "asc" }]
+        }
+      }
+    },
+    {
+      "name": "Error - duplicate id (409)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"id\": 1,\n  \"name\": \"Duplicate\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/dataset/{{dataset}}/record", "host": ["{{baseUrl}}"], "path": ["api", "dataset", "{{dataset}}", "record"] }
+      }
+    },
+    {
+      "name": "Error - unknown dataset (404)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/dataset/does_not_exist/query?groupBy=department",
+          "host": ["{{baseUrl}}"], "path": ["api", "dataset", "does_not_exist", "query"],
+          "query": [{ "key": "groupBy", "value": "department" }]
+        }
+      }
+    },
+    {
+      "name": "Error - invalid order (400)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/dataset/{{dataset}}/query?sortBy=age&order=sideways",
+          "host": ["{{baseUrl}}"], "path": ["api", "dataset", "{{dataset}}", "query"],
+          "query": [{ "key": "sortBy", "value": "age" }, { "key": "order", "value": "sideways" }]
+        }
+      }
+    },
+    {
+      "name": "Error - malformed JSON (400)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{ not json" },
+        "url": { "raw": "{{baseUrl}}/api/dataset/{{dataset}}/record", "host": ["{{baseUrl}}"], "path": ["api", "dataset", "{{dataset}}", "record"] }
+      }
+    }
+  ]
+}
