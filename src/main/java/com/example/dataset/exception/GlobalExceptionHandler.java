@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /** Maps domain exceptions to consistent JSON error responses. */
 @RestControllerAdvice
@@ -33,6 +34,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleUnreadable(HttpMessageNotReadableException ex) {
         return build(HttpStatus.BAD_REQUEST, "Request body is missing or is not a valid JSON object");
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResource(NoResourceFoundException ex) {
+        return build(HttpStatus.NOT_FOUND, "Resource not found");
     }
 
     @ExceptionHandler(Exception.class)
